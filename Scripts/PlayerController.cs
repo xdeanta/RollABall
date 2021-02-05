@@ -27,10 +27,6 @@ public class PlayerController : MonoBehaviour
         LoseTextObject.SetActive(false);
         setCountText();
         OriginalPos = transform.position;
-        /*if (SystemInfo.deviceType == DeviceType.Handheld)
-        {
-            Input.gyro.enabled = true;
-        }*/
     }
 
     void OnMove(InputValue movementValue){
@@ -55,6 +51,16 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate(){
         Vector3 movement = new Vector3(movementX,0.0f, movementY);
         rb.AddForce(movement * speed);
+        
+        Vector3 dir = Vector3.zero;
+        
+        dir.x= -Input.acceleration.y;
+        dir.z = Input.acceleration.x;
+        if(dir.sqrMagnitude > 1)
+          dir.Normalize();
+          
+        dir *=Time.deltaTime;
+        transform.Translate(dir * speed);
     }
 
     private void OnTriggerEnter(Collider other){
